@@ -1,0 +1,3 @@
+* system-detection
+  Detect stuff about your system, and populate some environment variables for
+  later use.

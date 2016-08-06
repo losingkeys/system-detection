@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# not all `uname`s support the -o flag
+systemType="$(uname -o 2> /dev/null)"
+test "$systemType" || systemType="$(uname)"
+
+case "$systemType" in
+  Darwin)
+    export BSD=true
+    export OS=darwin
+
+    if [ -x "$(command -v brew)" ]
+    then
+      export PACKAGE_MANAGER=homebrew
+    fi
+
+    if [ -x "$(command -v softwareupdate)" ]
+    then
+      export APPLE_SOFTWARE_UPDATE=apple
+    fi
+    ;;
+  FreeBSD)
+    export BSD=bsd
+    export OS=freebsd
+
+    if [ -x "$(command -v pkg)" ]
+    then
+      export PACKAGE_MANAGER=pkg
+    fi
+    ;;
+  GNU/Linux)
+    export GNU=gnu
+    export OS=linux
+
+    if [ -x "$(command -v pacman)" ]
+    then
+      export PACKAGE_MANAGER=pacman
+    fi
+
+    if [ -x "$(command -v makepkg)" ]
+    then
+      export AUR=aur
+    fi
+    ;;
+  Linux)
+    export OS=linux
+
+    if [ -x "$(command -v pacman)" ]
+    then
+      export PACKAGE_MANAGER=pacman
+    fi
+
+    if [ -x "$(command -v makepkg)" ]
+    then
+      export AUR=aur
+    fi
+    ;;
+  OpenBSD)
+    export BSD=bsd
+    export OS=openbsd
+
+    if [ -x "$(command -v pkg_add)" ]
+    then
+      export PACKAGE_MANAGER=pkg
+    fi
+    ;;
+esac
+
+SYSTEM_DETECTION="$(echo "$APPLE_SOFTWARE_UPDATE,$AUR,$BSD,$OS,$PACKAGE_MANAGER" | tr -s ,)"
+export SYSTEM_DETECTION
